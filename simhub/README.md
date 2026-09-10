@@ -61,17 +61,19 @@ dotnet build -c Release -p:SimHubPath="D:\SimHub"
 
 ## 업데이트 (원클릭)
 
-이후 업데이트는 저장소 루트의 `update.ps1` 하나로 끝난다 — pull, 빌드,
-SimHub 폴더 DLL 복사까지:
+이후 업데이트는 저장소 루트의 **`update.bat` 더블클릭** 하나로 끝난다 —
+pull, 빌드, SimHub 폴더 DLL 복사까지. (PowerShell 기본 보안 정책이
+.ps1 직접 실행을 막으므로, bat이 이번 실행에 한해 우회해서 돌려준다.)
+
+터미널에서 돌리려면:
 
 ```powershell
 cd D:\teamradio56
-.\update.ps1                          # 기본 경로 설치면 이대로
-.\update.ps1 -SimHubPath "D:\SimHub"  # 다른 경로면
+.\update.bat                                        # 기본 경로 설치면 이대로
+.\update.bat -SimHubPath "D:\SimHub"                # 다른 경로면
 ```
 
-(우클릭 → "PowerShell에서 실행"도 된다. SimHub이 켜져 있으면 DLL이
-잠기므로 스크립트가 종료를 기다렸다가 복사한다.)
+SimHub이 켜져 있으면 DLL이 잠기므로 스크립트가 종료를 기다렸다가 복사한다.
 
 ## 설치
 
