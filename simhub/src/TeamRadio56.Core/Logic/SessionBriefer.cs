@@ -46,7 +46,12 @@ namespace TeamRadio56.Core.Logic
             double endEt = ses.EndEt;
             double curEt = ses.CurrentEt;
             int maxLaps = ses.MaxLaps;
-            bool midJoin = curEt > 120 || me.TotalLaps > 0;
+            // 레이스의 그리드/포메이션 대기(롤링 스타트 전 ~40초)는 '시작'이다.
+            // 세션 시계는 대기 중에도 흐르므로 경과 시간이 아니라 페이즈로
+            // 판정한다 — 그린(5) 전이면 스타트 브리핑, 이후 합류면 중간 합류.
+            bool midJoin = isRace
+                ? ses.GamePhase >= 5 || me.TotalLaps > 0
+                : curEt > 120 || me.TotalLaps > 0;
             if (0 < endEt && endEt < 86400)
             {
                 int minutes = Math.Max(

@@ -280,7 +280,14 @@ class CrewChiefApp:
         end_et = ses.get("end_et", 0.0) or 0.0
         cur_et = ses.get("current_et", 0.0) or 0.0
         max_laps = ses.get("max_laps", 0) or 0
-        mid_join = cur_et > 120 or me.get("total_laps", 0) > 0
+        if is_race:
+            # 그리드/포메이션 대기(롤링 스타트 전 ~40초)는 '시작'이다.
+            # 세션 시계는 대기 중에도 흐르므로 경과 시간이 아니라 페이즈로
+            # 판정한다 — 그린(5) 전이면 스타트 브리핑, 이후 합류면 중간 합류.
+            mid_join = (ses.get("game_phase", 0) or 0) >= 5 \
+                or me.get("total_laps", 0) > 0
+        else:
+            mid_join = cur_et > 120 or me.get("total_laps", 0) > 0
         if 0 < end_et < 86400:
             minutes = max(int(round((end_et - cur_et) / 60)), 1)
             if minutes >= 60 and minutes % 60 == 0:
