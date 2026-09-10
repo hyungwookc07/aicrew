@@ -12,6 +12,9 @@ namespace TeamRadio56.Core.Logic
     /// </summary>
     public sealed class SessionBriefer
     {
+        /// <summary>스타트 스포터 모드 길이(초) — 0이면 브리핑에서 예고 생략.</summary>
+        public double StartSpotterSec = 45;
+
         private bool _briefed;
 
         public void Reset()
@@ -91,15 +94,23 @@ namespace TeamRadio56.Core.Logic
                 }
             }
 
-            double rain = ses.Raining;
-            if (rain >= 0.05)
-                parts.Add(Messages.Get("brief_rain"));
-            else if (ses.TrackTemp > 0)
+            if (ses.TrackTemp > 0)
                 parts.Add(Messages.Get("brief_temp", "t", ses.TrackTemp));
+            if (ses.Raining >= 0.05)
+                parts.Add(Messages.Get("brief_rain"));
 
             double fuel = snap.Player != null ? snap.Player.Fuel : 0.0;
             if (fuel != 0.0)
                 parts.Add(Messages.Get("brief_fuel", "f", fuel));
+
+            // 스타트 전용: 포메이션/그린 콜 안내 + 스타트 스포터 모드 예고 —
+            // 그리드 대기 ~40초를 채우는 실전 브리핑
+            if (isRace && !midJoin)
+            {
+                parts.Add(Messages.Get("brief_formation"));
+                if (StartSpotterSec > 0)
+                    parts.Add(Messages.Get("brief_start_spotter"));
+            }
 
             parts.Add(Messages.Get(midJoin ? "brief_carry_on"
                 : isRace ? "brief_calm" : "brief_out"));

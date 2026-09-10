@@ -47,6 +47,7 @@ namespace TeamRadio56.Core.Logic
             _cfg = cfg ?? new EngineSettings();
             Bus = new EventBus(Cooldowns.Default(_cfg.CooldownScale));
             _traffic = new TrafficAnalyzer(_cfg.Traffic);
+            _briefer.StartSpotterSec = _cfg.Traffic.StartSpotterSec;
             _reporter = new StatusReporter(laptimeEveryLap, statusEveryLaps);
         }
 

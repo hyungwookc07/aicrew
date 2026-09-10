@@ -307,15 +307,21 @@ class CrewChiefApp:
                 parts.append(msg("brief_grid_mid" if mid_join else "brief_grid",
                                  cp=cp, n=cls_count))
 
-        rain = ses.get("raining", 0.0)
-        if rain >= 0.05:
-            parts.append(msg("brief_rain"))
-        elif ses.get("track_temp", 0.0) > 0:
+        if ses.get("track_temp", 0.0) > 0:
             parts.append(msg("brief_temp", t=ses["track_temp"]))
+        if ses.get("raining", 0.0) >= 0.05:
+            parts.append(msg("brief_rain"))
 
         fuel = snap.player.get("fuel")
         if fuel:
             parts.append(msg("brief_fuel", f=fuel))
+
+        # 스타트 전용: 포메이션/그린 콜 안내 + 스타트 스포터 모드 예고 —
+        # 그리드 대기 ~40초를 채우는 실전 브리핑
+        if is_race and not mid_join:
+            parts.append(msg("brief_formation"))
+            if self.cfg.get("thresholds.start_spotter_sec", 45) > 0:
+                parts.append(msg("brief_start_spotter"))
 
         parts.append(msg("brief_carry_on") if mid_join
                      else msg("brief_calm") if is_race
